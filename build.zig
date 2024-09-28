@@ -23,17 +23,14 @@ pub fn build(b: *std.Build) !void {
     lib.defineCMacro("BASISU_FORCE_DEVEL_MESSAGES", "0");
     lib.defineCMacro("BASISU_SUPPORT_KTX2_ZSTD", "0");
 
-    lib.addIncludePath(.{ .path = "encoder" });
-    lib.addIncludePath(.{ .path = "transcoder" });
+    lib.addIncludePath(b.path("encoder"));
+    lib.addIncludePath(b.path("transcoder"));
 
-    lib.addCSourceFile(.{ .file = .{ .path = "zstd/zstd.c" }, .flags = &.{} });
+    lib.addCSourceFile(.{ .file = b.path("zstd/zstd.c"), .flags = &.{} });
 
     if (build_encoder) {
         lib.addCSourceFiles(.{ .files = &encoder_sources, .flags = &.{} });
-        lib.installHeadersDirectoryOptions(.{
-            .source_dir = .{ .path = "encoder" },
-            .install_dir = .header,
-            .install_subdir = "encoder",
+        lib.installHeadersDirectory(b.path("encoder"), "encoder", .{
             .exclude_extensions = &.{ "inc", "cpp" },
         });
     }
@@ -49,10 +46,7 @@ pub fn build(b: *std.Build) !void {
                 "-fno-sanitize=undefined", // there is some UB in transcoder
             },
         });
-        lib.installHeadersDirectoryOptions(.{
-            .source_dir = .{ .path = "transcoder" },
-            .install_dir = .header,
-            .install_subdir = "transcoder",
+        lib.installHeadersDirectory(b.path("transcoder"), "transcoder", .{
             .exclude_extensions = &.{ "inc", "cpp" },
         });
     }
