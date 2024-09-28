@@ -59,6 +59,7 @@
         "transcoder",
         "zstd",
         "OpenCL",
+        "encoder",
         // For example...
         //"LICENSE",
         //"README.md",
